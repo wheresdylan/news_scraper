@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-us">
-  <head>
+
+<head>
     <meta charset="UTF-8">
     <title>Animals</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -13,15 +14,46 @@
 
     <link rel="stylesheet" href="style.css">
 
-  </head>
-  <body class="container">
-    <h3 class="header">Zootastic Frontend</h3>
-    <div id="buttons">
-      <button class="btn" id="weight-sort">Sort By Weight</button>
-      <button class="btn" id="name-sort">Sort By Name</button>
+</head>
+
+<body>
+    <div class="container">
+    <nav>
+        <div class="nav-wrapper">
+            <a href="#!" class="brand-logo" id="headerLogo">Mongo Scraper</a>
+            <ul class="right hide-on-med-and-down">
+                <li>
+                    <a class="waves-effect waves-light btn" id="new-articles">Add New Odd Articles!</a>
+                </li>
+                <li>
+                    <a class="waves-effect waves-light btn" id="saved-articles">Saved Articles!</a>
+                </li>
+                <li>
+                    <a href="#">Home</a>
+                </li>
+                <li>
+                    <a href="#">Saved Articles</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <img src="https://static1.squarespace.com/static/52eec360e4b0c81c80749630/t/53cd83dbe4b09390906375c9/1408402670660/newspapers.jpg"
+        alt="Notebook" style="width:100%;">
+    <div class="content">
+        <h1>Mongo Scraper</h1>
+        <h3>Odd News</h3>
     </div>
+</div>
+<div class="container articles">
+        <nav>
+                <div class="nav-wrapper">
+                    <a href="#!" class="brand-logo center" id="footer">You have not added any articles!</a>
+                </div>
+            </nav>
+
+    
     <table id="results">
-      <thead>
+        <!-- <thead>
         <tr>
           <th id="animal-name">Name</th>
           <th id="animal-legs">Num Legs</th>
@@ -29,11 +61,14 @@
           <th id="animal-weight">Weight</th>
           <th id="animal-new-name">But I'd Call It...</th>
         </tr>
-      </thead>
-      <tbody>
-        <!-- Results from DB here -->
-      </tbody>
+      </thead> -->
+        <tbody>
+            <!-- Results from DB here -->
+        </tbody>
     </table>
-    <script src="app.js"></script>
-  </body>
+  
+</div>
+<script src="app.js"></script>
+</body>
+
 </html>
