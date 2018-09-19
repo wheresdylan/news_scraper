@@ -1,4 +1,4 @@
 module.exports = {
-    newsData: require("./newsData"),
+    NewsData: require("./NewsData"),
     Note: require("./Note")
   };

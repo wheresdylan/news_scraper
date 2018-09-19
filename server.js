@@ -7,6 +7,7 @@ var mongoose = require("mongoose");
 
 var db = require("./models");
 
+
 var bodyParser = require("body-parser");
 var exphbs = require("express-handlebars");
 
@@ -16,15 +17,17 @@ var path = require("path");
 var app = express();
 
 // Database configuration
-var databaseUrl = "news";
-var collections = ["newsData"];
+// var databaseUrl = "news";
+// var collections = ["newsData"];
 
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static("public"));
 
-mongoose.connect("mongodb://localhost/week18Populater", { useNewUrlParser: true });
+var dbUrl = process.env.MONGODB_URI || "mongodb://localhost/week18Populater";
+
+mongoose.connect(dbUrl, { useNewUrlParser: true });
 
 // Handlebars
 app.engine(
@@ -36,15 +39,15 @@ app.engine(
 app.set("view engine", "handlebars");
 
 // Hook mongojs configuration to the db variable
-var db = mongojs(databaseUrl, collections);
-db.on("error", function (error) {
-  console.log("Database Error:", error);
-});
+// var db = mongojs(databaseUrl, collections);
+// db.on("error", function (error) {
+//   console.log("Database Error:", error);
+// });
 
 app.get("/api/all", function (req, res) {
-  db.newsData.find({}, function (err, found) {
+  db.NewsData.find({}, function (err, found) {
     if (err) {
-      conslole.log(err);
+      console.log(err);
     } else {
       res.json(found);
     }
@@ -71,7 +74,6 @@ app.get("/", function (req, res) {
 
 request("https://www.upi.com/Odd_News/", function (error, response, html) {
 
-db.newsData.drop();
 
   var $ = cheerio.load(html);
   var results = [];
@@ -86,11 +88,8 @@ db.newsData.drop();
     titleNumber++;
 
     var title = $(element).text();
-    // var summary = $(element).text(".content");
 
     // var link = $(element).attr("href");
-
-    // console.log(link);
 
     if (titleNumber >= 5) {
       titleArray.push(title);
@@ -102,53 +101,41 @@ db.newsData.drop();
     contentNumber++;
 
     var title = $(element).text();
-    // var summary = $(element).text(".content");
 
     // var link = $(element).attr("href");
 
-    // console.log(link);
-
-
-    // results.push({
-    //   title: title,
-    //   summary: summary
-    // });
+  
     if (contentNumber >= 2) {
       contentArray.push(title);
     }
   });
 
-  // db.scrapedData.insert({
-  //   results
-
-  // })
-
   for (var i = 0; i < contentArray.length; i++) {
-    // results.push({
-    //   id:i,
-    //   title: titleArray[i],
-    //   description: contentArray[i]
-    // });
 
-    db.newsData.insert({
-      title: titleArray[i],
-      description: contentArray[i]
-  
+    var result = {};
+
+    result.title = titleArray[i];
+    result.description = contentArray[i];
+
+    db.NewsData.create(result)
+    .then(function(dbArticle) {
+      // View the added result in the console
+      console.log(dbArticle);
     })
+    .catch(function(err) {
+      // If an error occurred, send it to the client
+      return res.json(err);
+    });
+
     
   }
-
-  // db.newsData.insert({
-  //   results
-
-  // })
 
 });
 
 // Route for grabbing a specific Article by id, populate it with it's note
 app.get("/api/all/:id", function(req, res) {
   // Using the id passed in the id parameter, prepare a query that finds the matching one in our db...
-  db.newsData.findOne({ _id: req.params.id })
+  db.NewsData.findOne({ _id: req.params.id })
     // ..and populate all of the notes associated with it
     .populate("note")
     .then(function(dbnewsData) {
@@ -162,13 +149,17 @@ app.get("/api/all/:id", function(req, res) {
 });
 
 app.post("/api/all/:id", function(req, res) {
+
+  console.log(req.body);
+
   // Create a new note and pass the req.body to the entry
   db.Note.create(req.body)
     .then(function(dbNote) {
+
       // If a Note was created successfully, find one Article with an `_id` equal to `req.params.id`. Update the Article to be associated with the new Note
       // { new: true } tells the query that we want it to return the updated User -- it returns the original by default
       // Since our mongoose query returns a promise, we can chain another `.then` which receives the result of the query
-      return db.newsData.findOneAndUpdate({ _id: req.params.id }, { note: dbNote._id }, { new: true });
+      return db.NewsData.findOneAndUpdate({ _id: req.params.id }, { note: dbNote._id }, { new: true });
     })
     .then(function(dbnewsData) {
       // If we were able to successfully update an Article, send it back to the client
@@ -179,8 +170,8 @@ app.post("/api/all/:id", function(req, res) {
       res.json(err);
     });
 });
+var PORT = process.env.PORT || 3000
 
-
-app.listen(3000, function () {
-  console.log("App running on port 3000!");
+app.listen(PORT, function () {
+  console.log("App running on port " + PORT + "!");
 });
