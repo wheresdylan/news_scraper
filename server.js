@@ -24,10 +24,10 @@ var app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static("public"));
-if (process.env.MONGODB_URI) { console.log(process.env.MONGODB_URI)}
+
 var dbUrl = process.env.MONGODB_URI || "mongodb://localhost/week18Populater";
 
-mongoose.connect(dbUrl);
+mongoose.connect(dbUrl, { useNewUrlParser: true });
 
 // Handlebars
 app.engine(
@@ -124,7 +124,7 @@ request("https://www.upi.com/Odd_News/", function (error, response, html) {
     })
     .catch(function(err) {
       // If an error occurred, send it to the client
-      return res.json(err);
+      console.log(err)
     });
 
     
