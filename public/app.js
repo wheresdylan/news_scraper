@@ -1,37 +1,42 @@
 console.log("working")
 
-function displayResults(newsData) {
-  // First, empty the table
-  $("#homePage").empty();
+$(document).on("click", "#new-articles", function () {
 
-  console.log(newsData)
+  function displayResults(newsData) {
+    // First, empty the table
+    $("#homePage").empty();
 
-  for (var i = 0; i < newsData.length; i++) {
+    console.log(newsData)
 
-    var tr = $("<tr>").append(
-      $("<td>").text(newsData[i].title),
-      $("<td>").text(newsData[i].description)
-    );
+    for (var i = 0; i < newsData.length; i++) {
 
-    $("#homePage").append(tr);
+      var tr = $("<tr>").append(
+        $("<td>").text(newsData[i].title),
+        $("<td>").text(newsData[i].description)
+      );
 
-    $("#homePage").append("<textarea id='bodyinput" + newsData[i]._id + "' name='body'></textarea>"),
+      $("#homePage").append(tr);
 
-    $("#homePage").append("<button data-id='" + newsData[i]._id + "' class='comment'>Submit Comment</button>")
-    $("#homePage").append("<button data-id='" + i + "' id='save'>Save Article</button>")
-    $("#homePage").append(" <div id='notes" + newsData[i]._id  + "'></div><hr>")
-    
+      $("#homePage").append("<textarea id='bodyinput" + newsData[i]._id + "' name='body'></textarea>"),
+
+        $("#homePage").append("<button data-id='" + newsData[i]._id + "' class='comment'>Submit Comment</button>")
+      $("#homePage").append("<button data-id='" + i + "' id='save'>Save Article</button>")
+      $("#homePage").append(" <div id='notes" + newsData[i]._id + "'></div><hr>")
+
+    }
+
   }
 
-}
 
 $.getJSON("/api/all", function (data) {
   // Call our function to generate a table body
   displayResults(data);
 });
 
+});
 
-$(document).on("click", ".comment", function() {
+
+$(document).on("click", ".comment", function () {
   // Grab the id associated with the article from the submit button
   var thisId = $(this).attr("data-id");
 
@@ -49,7 +54,7 @@ $(document).on("click", ".comment", function() {
     }
   })
     // With that done
-    .then(function(data) {
+    .then(function (data) {
       // Log the response
       // console.log(data);
       // Empty the notes section
@@ -58,12 +63,12 @@ $(document).on("click", ".comment", function() {
   // Also, remove the values entered in the input and textarea for note entry
   $("#bodyinput" + thisId).val("");
 
-    $.ajax({
+  $.ajax({
     method: "GET",
     url: "/api/all/" + thisId
   })
     // With that done, add the note information to the page
-    .then(function(data) {
+    .then(function (data) {
       console.log(thisId);
       console.log(data.note.title);
       // The title of the article
