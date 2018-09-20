@@ -1,4 +1,4 @@
 module.exports = {
-    NewsData: require("./NewsData"),
-    Note: require("./Note")
+    NewsData: require("./NewsData.js"),
+    Note: require("./Note.js")
   };
