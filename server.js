@@ -27,7 +27,7 @@ app.use(express.static("public"));
 if (process.env.MONGODB_URI) { console.log(process.env.MONGODB_URI)}
 var dbUrl = process.env.MONGODB_URI || "mongodb://localhost/week18Populater";
 
-mongoose.connect(dbUrl, { useNewUrlParser: true });
+mongoose.connect(dbUrl);
 
 // Handlebars
 app.engine(
